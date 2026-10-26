@@ -1,8 +1,8 @@
-# dsh-plugin-roundtable 的 bundle patch
+# dsh-ai-roundtable 的 bundle patch
 #
 # 这里只做「纯 insert」——不带 config，这样 DSH 可以热挂载，不必等重启。
 # 真正的配置在 profile 的 cordis.patch.yml 里，用同一个 id 覆盖。
 
 - insert:
-    - id: dsh-plugin-roundtable
-      name: 'dsh-plugin-roundtable'
+    - id: dsh-ai-roundtable
+      name: 'dsh-ai-roundtable'

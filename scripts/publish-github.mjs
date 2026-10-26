@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const OWNER = 'valarjin01'
-const REPO = 'dsh-plugin-roundtable'
+const REPO = 'dsh-ai-roundtable'
 const BRANCH = 'main'
 const TOKEN = process.env.GITHUB_TOKEN ?? ''
 const DRY = process.argv.includes('--dry')
@@ -24,7 +24,7 @@ const SKIP_FILES = new Set(['.DS_Store'])
 const TEXT_EXT = new Set(['.js', '.mjs', '.cjs', '.json', '.md', '.yml', '.yaml', '.svg', '.html', '.css', '.txt', '.command', '.sh', '.py', ''])
 
 const DESC =
-  '多模型圆桌：几个 AI 就同一议题展开探讨，首轮互不可见，之后由中立调度员决定谁发言；只摊开角度与分歧，判断留给你。'
+  '多AI模型讨论_圆桌会议：几个 AI 就同一议题展开探讨，首轮互不可见，之后由中立调度员决定谁发言；只摊开角度与分歧，判断留给你。'
 const HOMEPAGE = `https://github.com/${OWNER}/${REPO}`
 const TOPICS = ['dsh', 'dsh-plugin', 'deepseek-harness', 'ai', 'multi-agent', 'roundtable', 'debate']
 
@@ -46,7 +46,7 @@ async function api(path, init = {}) {
       Authorization: `Bearer ${TOKEN}`,
       Accept: 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'dsh-plugin-roundtable-publisher',
+      'User-Agent': 'dsh-ai-roundtable-publisher',
       ...(init.headers ?? {}),
     },
   })

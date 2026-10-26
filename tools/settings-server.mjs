@@ -43,7 +43,7 @@ function seedFromPatch() {
     const file = join(PROFILE, 'cordis.patch.yml')
     if (!existsSync(file)) return null
     const doc = yaml.load(readFileSync(file, 'utf8'))
-    const entry = Array.isArray(doc) ? doc.find((e) => e && e.id === 'dsh-plugin-roundtable') : null
+    const entry = Array.isArray(doc) ? doc.find((e) => e && e.id === 'dsh-ai-roundtable') : null
     return entry?.config ?? null
   } catch {
     return null

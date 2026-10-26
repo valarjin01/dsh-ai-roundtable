@@ -1,6 +1,6 @@
-# dsh-plugin-roundtable
+# 多AI模型讨论_圆桌会议
 
-**多模型圆桌** —— 一个 DeepSeek Harness 插件。几个 AI 就同一议题展开探讨：首轮互不可见，
+`dsh-ai-roundtable` · 一个 DeepSeek Harness 插件。几个 AI 就同一议题展开探讨：首轮互不可见，
 之后由中立调度员决定谁发言；收场只交三样东西，判断留给你。
 
 ![version](https://img.shields.io/badge/version-1.0.0-4d6bfe)
@@ -15,7 +15,7 @@
 <details>
 <summary><b>English</b></summary>
 
-**dsh-plugin-roundtable** — a DeepSeek Harness plugin that seats several LLMs at one table.
+**dsh-ai-roundtable** — a DeepSeek Harness plugin that seats several LLMs at one table.
 
 It is built for *exploration*, not decision-making:
 
@@ -28,7 +28,7 @@ It is built for *exploration*, not decision-making:
 **Install**
 
 ```
-Plugins → Add plugin → Install third-party plugin → github:valarjin01/dsh-plugin-roundtable
+Plugins → Add plugin → Install third-party plugin → github:valarjin01/dsh-ai-roundtable
 ```
 
 Restart DeepSeek Harness, then open **Settings → Roundtable**, add at least two API keys, and say
@@ -56,7 +56,7 @@ Requires DeepSeek Harness `0.2.1-rc.3` (tested). Licensed MIT.
 ## 安装
 
 ```
-插件 → 添加插件 → 安装第三方插件 → github:valarjin01/dsh-plugin-roundtable
+插件 → 添加插件 → 安装第三方插件 → github:valarjin01/dsh-ai-roundtable
 ```
 
 装完**重启一次**，然后 设置 → **圆桌讨论** → 填 API key（至少两个席位）。
@@ -157,7 +157,7 @@ roundtable({action:"close", roomId:"rt-xxxx"})     → 纪要 + 全文
 
 ## 填 key
 
-编辑 `~/.dsh/profiles/desktop/cordis.patch.yml` 里 `# >>> dsh-plugin-roundtable` 那段：
+编辑 `~/.dsh/profiles/desktop/cordis.patch.yml` 里 `# >>> dsh-ai-roundtable` 那段：
 
 ```yaml
       - name: ChatGPT
@@ -240,7 +240,7 @@ GitHub 上也有 `deepseek-ai/DeepSeek-Harness` 的 `docs/user/develop/`。
 
 ```json
 {
-  "name": "dsh-plugin-roundtable",
+  "name": "dsh-ai-roundtable",
   "type": "module",
   "exports": { ".": "./lib/index.js", "./client": "./lib/client.js", "./locale/*.json": "./locale/*.json", "./icon": "./icon.svg" },
   "dsh": {

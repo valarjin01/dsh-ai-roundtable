@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-从 desktop profile 卸载 dsh-plugin-roundtable（install-profile.py 的逆操作）。
+从 desktop profile 卸载 dsh-ai-roundtable（install-profile.py 的逆操作）。
 
 做四件事：
   1. package.json：删依赖项 + 从 dsh.profile.bundles 移除
-  2. 删符号链接 node_modules/dsh-plugin-roundtable
+  2. 删符号链接 node_modules/dsh-ai-roundtable
   3. cordis.patch.yml：删掉 >>> / <<< 之间的配置块
   4. 不删 .roundtable-backup/，留作证据
 
@@ -18,9 +18,9 @@ import sys
 from pathlib import Path
 
 PROFILE = Path.home() / ".dsh" / "profiles" / "desktop"
-PKG_NAME = "dsh-plugin-roundtable"
-START = "# >>> dsh-plugin-roundtable"
-END = "# <<< dsh-plugin-roundtable"
+PKG_NAME = "dsh-ai-roundtable"
+START = "# >>> dsh-ai-roundtable"
+END = "# <<< dsh-ai-roundtable"
 
 
 def strip_block(text: str) -> str:

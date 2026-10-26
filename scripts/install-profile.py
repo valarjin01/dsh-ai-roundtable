@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-把 dsh-plugin-roundtable 装进 DSH 的 desktop profile。
+把 dsh-ai-roundtable 装进 DSH 的 desktop profile。
 
 做四件事（幂等，可重复运行）：
   1. profile/package.json：加 link:<本目录> 依赖 + 追加到 dsh.profile.bundles
-  2. profile/node_modules/dsh-plugin-roundtable：指向本目录的符号链接
+  2. profile/node_modules/dsh-ai-roundtable：指向本目录的符号链接
   3. profile/cordis.patch.yml：追加一段配置（带 >>>/<<< 标记，便于回滚）
   4. 备份原文件到 .roundtable-backup/<时间戳>/
 
@@ -21,9 +21,9 @@ from pathlib import Path
 
 PLUGIN_DIR = Path(__file__).resolve().parent.parent
 PROFILE = Path.home() / ".dsh" / "profiles" / "desktop"
-PKG_NAME = "dsh-plugin-roundtable"
-START = "# >>> dsh-plugin-roundtable"
-END = "# <<< dsh-plugin-roundtable"
+PKG_NAME = "dsh-ai-roundtable"
+START = "# >>> dsh-ai-roundtable"
+END = "# <<< dsh-ai-roundtable"
 
 CONFIG_BLOCK = f"""{START}
 # 多模型圆桌。三个席位都走 OpenAI 兼容的 /chat/completions。
