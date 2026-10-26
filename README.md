@@ -59,7 +59,7 @@ Requires DeepSeek Harness `0.2.1-rc.3` (tested). Licensed MIT.
 插件 → 添加插件 → 安装第三方插件 → github:valarjin01/dsh-ai-roundtable
 ```
 
-装完**重启一次**，然后 设置 → **圆桌讨论** → 填 API key（至少两个席位）。
+装完**重启一次**，然后 设置 → **多AI圆桌会议** → 填 API key（至少两个席位）。
 
 本地开发用 `python3 scripts/install-profile.py`（幂等，自带备份；卸载用 `scripts/uninstall-profile.py`）。
 
@@ -93,7 +93,7 @@ Requires DeepSeek Harness `0.2.1-rc.3` (tested). Licensed MIT.
 
 ## 设置页
 
-侧栏 → **插件** 或 **设置** → **圆桌讨论**（重启一次后出现）。能改：
+侧栏 → **插件** 或 **设置** → **多AI圆桌会议**（重启一次后出现）。能改：
 
 - 席位：名字 / 接口地址 / 模型 / key（只显示掩码）/ 人设 / **思考模式**
 - 我的席位：称呼、参与方式

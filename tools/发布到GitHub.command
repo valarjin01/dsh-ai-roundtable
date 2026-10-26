@@ -2,7 +2,7 @@
 # 双击运行：粘贴 token → 自动发布到 GitHub
 cd "$(dirname "$0")/.." || exit 1
 echo "────────────────────────────────────────"
-echo "  发布 dsh-plugin-roundtable 到 GitHub"
+echo "  发布 dsh-ai-roundtable 到 GitHub"
 echo "────────────────────────────────────────"
 echo ""
 echo "没有 token？打开："

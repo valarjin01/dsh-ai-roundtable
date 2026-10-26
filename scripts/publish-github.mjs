@@ -146,7 +146,7 @@ async function main() {
   })
   const commit = await api(`/repos/${OWNER}/${REPO}/git/commits`, {
     method: 'POST',
-    body: JSON.stringify({ message: 'feat: 多模型圆桌 v1.0.0', tree: treeRes.sha, parents: [parent] }),
+    body: JSON.stringify({ message: 'feat: 多AI模型讨论_圆桌会议 v1.0.0', tree: treeRes.sha, parents: [parent] }),
   })
 
   // 4. 指向 main
