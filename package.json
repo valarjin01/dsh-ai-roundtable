@@ -1,0 +1,73 @@
+{
+  "name": "dsh-plugin-roundtable",
+  "version": "1.0.0",
+  "description": "多模型圆桌：几个 AI 就同一议题展开探讨，首轮互不可见，之后由中立调度员决定谁发言；只摊开角度与分歧，判断留给你。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-connection"
+      ]
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.2.1-rc.3": "compatible"
+      }
+    }
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "roundtable",
+    "multi-agent",
+    "debate",
+    "discussion"
+  ],
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": "*"
+  },
+  "license": "MIT",
+  "files": [
+    "lib/**/*.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "tools/**/*",
+    "README.md",
+    "LICENSE",
+    "DECLARATION.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valarjin01/dsh-plugin-roundtable.git"
+  },
+  "homepage": "https://github.com/valarjin01/dsh-plugin-roundtable#readme",
+  "bugs": {
+    "url": "https://github.com/valarjin01/dsh-plugin-roundtable/issues"
+  },
+  "author": "valarjin01"
+}

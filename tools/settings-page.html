@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>圆桌配置</title>
+<style>
+:root{--bg:#f4f4f5;--panel:#fff;--line:#e6e6ea;--line2:#d9d9e0;--fg:#1a1a1c;--fg2:#5c5c66;--fg3:#90909c;--pri:#4d6bfe;--danger:#e5484d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font:13px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:var(--fg)}
+.wrap{max-width:760px;margin:0 auto;padding:28px 24px 80px}
+h1{font-size:17px;margin:0 0 6px}
+.sub{color:var(--fg3);font-size:12px;margin-bottom:18px}
+.banner{padding:10px 14px;border-radius:10px;background:rgba(77,107,254,.06);border:1px solid rgba(77,107,254,.16);color:var(--fg2);margin-bottom:16px;line-height:1.7}
+.banner strong{color:var(--fg)}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px;background:var(--panel)}
+.card.plain{background:#fafafb}
+.title{display:flex;align-items:center;gap:8px;font-weight:600;margin-bottom:12px}
+.grow{flex:1}
+.btn{height:28px;padding:0 10px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--fg);font:inherit;font-size:12px;cursor:pointer}
+.btn:hover{background:#f2f2f4}
+.btn.pri{background:var(--pri);border-color:transparent;color:#fff;font-weight:500}
+.btn.danger{color:var(--danger)}
+.row{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px 12px;margin-bottom:10px}
+.row.two{grid-template-columns:1fr 1fr}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f label{font-size:11.5px;color:var(--fg2)}
+input,select{width:100%;height:30px;padding:0 8px;font:inherit;font-size:12.5px;color:var(--fg);background:var(--panel);border:1px solid var(--line2);border-radius:8px;outline:none}
+input:focus,select:focus{border-color:var(--pri)}
+.check{display:inline-flex;align-items:center;gap:7px;font-size:12px;margin-bottom:6px}
+.hint{font-size:11px;color:var(--fg3);line-height:1.6;margin-top:6px}
+.seat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.shead{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.sname{font-weight:600;font-size:12.5px}
+.badge{font-size:10.5px;padding:1px 7px;border-radius:999px;line-height:16px}
+.badge.ok{color:#0f7b3f;background:rgba(18,161,80,.1)}
+.badge.miss{color:#a15c00;background:rgba(224,150,0,.12)}
+.think{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--fg3)}
+.think select{height:24px;width:auto;padding:0 4px;font-size:11px;border-radius:6px}
+.styles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.style{border:1px solid var(--line);border-radius:10px;padding:9px 10px;cursor:pointer;background:var(--panel)}
+.style:hover{background:#f7f7f9}
+.style.on{border-color:var(--pri);background:rgba(77,107,254,.05)}
+.style .t{font-weight:600;font-size:12px}
+.style .d{font-size:11px;color:var(--fg3);margin-top:2px;line-height:1.5}
+.style .m{font-size:10.5px;color:var(--fg3);margin-top:5px}
+.foot{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:8px}
+.msg{font-size:11.5px}
+.msg.ok{color:#0f7b3f}.msg.err{color:var(--danger)}
+.empty{padding:40px;text-align:center;color:var(--fg3)}
+code{background:#f0f0f3;padding:1px 5px;border-radius:4px;font-size:11.5px}
+</style></head><body>
+<div class="wrap">
+  <h1>圆桌配置</h1>
+  <div class="sub">改完点保存立即生效，不用重启 DeepSeek Harness</div>
+  <div class="banner">
+    <strong>这里没有主持人兜底。</strong><br>
+    AI 们会吵架，会互相拆台，最后谁也不服谁。<br>
+    <strong>那正好。</strong>
+  </div>
+  <div id="app"><div class="empty">读取配置…</div></div>
+</div>
+<script>
+const STYLES=[
+ {id:'debate',t:'辩论',d:'两方对垒，逼出最强论证，不许和稀泥',temp:0.7},
+ {id:'brainstorm',t:'头脑风暴',d:'先求量，禁止否定，最后才排序',temp:1.0},
+ {id:'redteam',t:'红队',d:'只找失败路径、隐藏假设和滥用场景',temp:0.8},
+ {id:'postmortem',t:'复盘',d:'还原时间线，分清根因和诱因',temp:0.6},
+ {id:'socratic',t:'苏格拉底',d:'只提问和澄清定义，不给结论',temp:0.7},
+ {id:'decision',t:'决策',d:'收敛到可执行选项，给出取舍判据',temp:0.7}]
+let state=null
+const app=document.getElementById('app')
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))
+const draftify=c=>JSON.parse(JSON.stringify({...c,participants:c.participants.map(p=>({...p,apiKey:''}))}))
+
+async function api(path,opt){const r=await fetch(path,opt);const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'HTTP '+r.status);return d}
+
+function paint(){
+  const d=state.draft
+  app.innerHTML=`
+  <div class="card">
+    <div class="title">席位<span class="grow"></span><button class="btn" data-act="add">+ 添加席位</button></div>
+    ${d.participants.map((p,i)=>`
+      <div class="seat">
+        <div class="shead">
+          <span class="sname">${esc(p.name||'未命名')}</span>
+          <span class="badge ${p.hasKey||p.apiKey?'ok':'miss'}">${p.hasKey||p.apiKey?'已配置':'缺 key'}</span>
+          <span class="think">协议
+            <select data-i="${i}" data-f="kind">
+              <option value="auto"${(p.kind||'auto')==='auto'?' selected':''}>自动</option>
+              <option value="openai"${p.kind==='openai'?' selected':''}>OpenAI</option>
+              <option value="anthropic"${p.kind==='anthropic'?' selected':''}>Claude</option>
+            </select>
+          </span>
+          <span class="think">思考
+            <select data-i="${i}" data-f="thinking">
+              <option value="auto"${p.thinking==='auto'?' selected':''}>自动</option>
+              <option value="on"${p.thinking==='on'?' selected':''}>开启</option>
+              <option value="off"${p.thinking==='off'?' selected':''}>关闭</option>
+            </select>
+          </span>
+          <span class="grow"></span>
+          <button class="btn" data-act="test" data-i="${i}">测试连接</button>
+          <button class="btn danger" data-act="del" data-i="${i}">删除</button>
+        </div>
+        <div class="row">
+          <div class="f"><label>名称</label><input data-i="${i}" data-f="name" value="${esc(p.name)}"></div>
+          <div class="f"><label>接口地址</label><input data-i="${i}" data-f="baseUrl" value="${esc(p.baseUrl)}"></div>
+          <div class="f"><label>模型</label><input data-i="${i}" data-f="model" value="${esc(p.model)}"></div>
+        </div>
+        <div class="row two">
+          <div class="f"><label>API Key</label>
+            <input type="password" data-i="${i}" data-f="apiKey" value="" placeholder="${p.hasKey?'已配置 '+esc(p.keyHint)+'，留空不修改':'sk-... 或 ark-...'}">
+          </div>
+          <div class="f"><label>人设（写进系统提示词）</label><input data-i="${i}" data-f="persona" value="${esc(p.persona)}"></div>
+        </div>
+        <div class="hint" data-status="${i}"></div>
+      </div>`).join('')}
+    <div class="hint">留空 key 的席位自动跳过。<strong>思考</strong>关掉通常快 3–4 倍、省一半 token。</div>
+  </div>
+
+  <div class="card">
+    <div class="title">探讨规则</div>
+    <div class="row">
+      <div class="f"><label>调度员</label><select data-f="moderator">
+        ${d.participants.filter(p=>p.hasKey||p.apiKey).map(p=>`<option${p.name===d.moderator?' selected':''}>${esc(p.name)}</option>`).join('')||'<option>（没有可用席位）</option>'}
+      </select></div>
+      <div class="f"><label>最多几轮</label><input type="number" min="1" max="6" data-f="maxRounds" value="${d.maxRounds}"></div>
+      <div class="f"><label>单次字数上限</label><input type="number" min="80" max="1200" data-f="maxWordsPerTurn" value="${d.maxWordsPerTurn}"></div>
+    </div>
+    <label class="check"><input type="checkbox" data-f="blindFirstRound"${d.blindFirstRound!==false?' checked':''}> 首轮互不可见</label>
+    <div class="hint">开着时每人第一次开口前看不到别人；关掉更快，但容易互相附和。模型不许替你下结论这条写在提示词里，不设开关。</div>
+  </div>
+
+  <div class="card">
+    <div class="title">讨论风格</div>
+    <div class="styles">${STYLES.map(s=>`
+      <div class="style ${d.style===s.id?'on':''}" data-act="style" data-id="${s.id}">
+        <div class="t">${s.t}</div><div class="d">${s.d}</div><div class="m">推荐温度 ${s.temp}</div>
+      </div>`).join('')}</div>
+  </div>
+
+  <div class="card plain">
+    <div class="title">预算</div>
+    <div class="row two">
+      <div class="f"><label>温度</label><input type="number" step="0.1" min="0" max="2" data-f="temperature" value="${d.temperature}"></div>
+      <div class="f"><label>单次超时（秒）</label><input type="number" min="10" data-f="timeoutSec" value="${Math.round(d.timeoutMs/1000)}"></div>
+    </div>
+    <div class="hint">预估：${d.participants.filter(p=>p.hasKey||p.apiKey).length} 席位 × ${d.maxRounds} 轮 + 1 次记录 = ${d.participants.filter(p=>p.hasKey||p.apiKey).length*d.maxRounds+1} 次调用</div>
+  </div>
+
+  <div class="foot"><span class="msg" id="msg"></span><button class="btn" data-act="reload">还原</button><button class="btn pri" data-act="save">保存</button></div>`
+}
+
+const msg=(t,k)=>{const el=document.getElementById('msg');if(el){el.textContent=t;el.className='msg '+(k||'')}}
+
+async function load(){
+  app.innerHTML='<div class="empty">读取配置…</div>'
+  try{const {config}=await api('/api/config');state={config,draft:draftify(config)};paint()}
+  catch(e){app.innerHTML='<div class="empty">读取失败：'+esc(e.message)+'</div>'}
+}
+
+app.addEventListener('input',e=>{
+  const t=e.target,f=t.dataset&&t.dataset.f
+  if(!f||!state)return
+  if(t.type==='checkbox'){state.draft[f]=t.checked;return}
+  if(t.dataset.i!==undefined){const s=state.draft.participants[+t.dataset.i];if(s)s[f]=t.value}
+  else if(f==='timeoutSec')state.draft.timeoutMs=Number(t.value)*1000
+  else if(['maxRounds','maxWordsPerTurn','temperature'].includes(f))state.draft[f]=Number(t.value)
+  else state.draft[f]=t.value
+})
+
+app.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-act]');if(!b||!state)return
+  const act=b.dataset.act,i=b.dataset.i!==undefined?+b.dataset.i:-1
+  if(act==='add'){state.draft.participants.push({name:'新席位',baseUrl:'https://',model:'',persona:'',apiKey:'',thinking:'auto',hasKey:false});return paint()}
+  if(act==='del'){state.draft.participants.splice(i,1);return paint()}
+  if(act==='style'){state.draft.style=b.dataset.id;const s=STYLES.find(x=>x.id===b.dataset.id);if(s)state.draft.temperature=s.temp;return paint()}
+  if(act==='reload')return load()
+  if(act==='test'){
+    const slot=document.querySelector('[data-status="'+i+'"]')
+    if(slot){slot.textContent='连接中…';slot.className='hint'}
+    try{
+      const seat=state.draft.participants[i]||{}
+      const r=await api('/api/test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({index:i,apiKey:seat.apiKey||'',baseUrl:seat.baseUrl||'',model:seat.model||'',thinking:seat.thinking||'auto'})})
+      if(slot){slot.textContent=r.ok?('连接正常，'+r.ms+' ms'):('失败：'+r.error);slot.className='hint '+(r.ok?'msg ok':'msg err')}
+    }catch(err){if(slot){slot.textContent='失败：'+err.message;slot.className='hint msg err'}}
+    return
+  }
+  if(act==='save'){
+    b.disabled=true;msg('保存中…')
+    try{
+      const {config}=await api('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state.draft)})
+      state={config,draft:draftify(config)};paint();msg('已保存，立即生效','ok')
+    }catch(err){msg('保存失败：'+err.message,'err')}finally{b.disabled=false}
+  }
+})
+
+load()
+</script></body></html>

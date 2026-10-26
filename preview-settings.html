@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>圆桌配置 · 预览</title>
+<style>
+/* 预览页自带的浅色 token；装进 DSH 后这些会被应用的 --dsw-alias-* 覆盖 */
+:root{
+  --dsw-alias-bg-base:#ffffff;
+  --dsw-alias-bg-layer-1:#ffffff;
+  --dsw-alias-bg-layer-2:#f6f6f7;
+  --dsw-alias-bg-hover:#f2f2f4;
+  --dsw-alias-border-l1:#e8e8ec;
+  --dsw-alias-border-l2:#dcdce2;
+  --dsw-alias-label-primary:#1a1a1c;
+  --dsw-alias-label-secondary:#5c5c66;
+  --dsw-alias-label-tertiary:#90909c;
+  --dsw-alias-state-business-primary:#4d6bfe;
+  --dsw-alias-state-danger:#e5484d;
+  --dsw-alias-state-success:#12a150;
+  --dsw-radius-md:12px;
+  --dsw-radius-sm:8px;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#ececed;font:13px/1.6 var(--font);color:var(--dsw-alias-label-primary);-webkit-font-smoothing:antialiased}
+.page{padding:24px;display:flex;justify-content:center}
+
+/* 设置弹窗 */
+.modal{width:1130px;max-width:100%;height:auto;background:var(--dsw-alias-bg-base);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.14);display:flex;flex-direction:column;overflow:hidden}
+.modal-head{display:flex;align-items:center;padding:20px 24px 12px}
+.modal-head h1{font-size:16px;font-weight:600;margin:0;letter-spacing:.01em}
+.modal-head .spacer{flex:1}
+.btn{height:30px;padding:0 12px;border-radius:var(--dsw-radius-sm);font:inherit;font-size:12.5px;cursor:pointer;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary)}
+.btn:hover{background:var(--dsw-alias-bg-hover)}
+.btn.primary{background:var(--dsw-alias-state-business-primary);border-color:transparent;color:#fff;font-weight:500}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.danger{color:var(--dsw-alias-state-danger);border-color:rgba(229,72,77,.35)}
+.btn.ghost{border-color:transparent;background:transparent}
+.icon-btn{width:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--dsw-alias-label-tertiary);cursor:pointer;border-radius:8px}
+.icon-btn:hover{background:var(--dsw-alias-bg-hover);color:var(--dsw-alias-label-primary)}
+
+.modal-body{display:flex;min-height:0}
+/* 左侧导航 */
+.nav{width:212px;flex:none;padding:8px 12px 20px;border-right:1px solid var(--dsw-alias-border-l1)}
+.nav a{display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;border-radius:var(--dsw-radius-sm);color:var(--dsw-alias-label-secondary);text-decoration:none;font-size:13px;cursor:pointer}
+.nav a:hover{background:var(--dsw-alias-bg-hover)}
+.nav a.on{background:#eef1ff;color:var(--dsw-alias-label-primary);font-weight:500}
+.nav a .ico{width:16px;text-align:center;opacity:.75;font-size:13px}
+/* 右侧内容 */
+.content{flex:1;min-width:0;padding:8px 32px 40px}
+.content h2{font-size:15px;font-weight:600;margin:6px 0 18px}
+
+.banner{padding:10px 14px;border-radius:10px;background:#f4f6ff;border:1px solid #e3e8ff;color:var(--dsw-alias-label-secondary);font-size:12.5px;line-height:1.7;margin-bottom:16px}
+.banner strong{color:var(--dsw-alias-label-primary);font-weight:600}
+.card{border:1px solid var(--dsw-alias-border-l1);border-radius:var(--dsw-radius-md);padding:16px 18px;margin-bottom:16px;background:var(--dsw-alias-bg-layer-1)}
+.card.sunken{background:var(--dsw-alias-bg-layer-2);border-color:transparent}
+.card-title{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-bottom:12px}
+.card-title .spacer{flex:1}
+.q{display:inline-flex;width:14px;height:14px;border-radius:50%;border:1px solid var(--dsw-alias-border-l2);color:var(--dsw-alias-label-tertiary);font-size:9px;align-items:center;justify-content:center;cursor:help;font-weight:600}
+
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 16px;margin-bottom:12px}
+.row.two{grid-template-columns:1fr 1fr}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field > label{font-size:12px;color:var(--dsw-alias-label-secondary);display:flex;align-items:center;gap:5px}
+input[type=password]{letter-spacing:.12em;font-size:11.5px}
+input[type=text],input[type=password],input[type=number],select,textarea{
+  width:100%;height:30px;padding:0 10px;font:inherit;font-size:12.5px;color:var(--dsw-alias-label-primary);
+  background:var(--dsw-alias-bg-base);border:1px solid var(--dsw-alias-border-l2);border-radius:var(--dsw-radius-sm);outline:none}
+textarea{height:auto;padding:8px 10px;resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px rgba(77,107,254,.15)}
+.hint{font-size:11.5px;color:var(--dsw-alias-label-tertiary);margin-top:-2px}
+
+.seat{border:1px solid var(--dsw-alias-border-l1);border-radius:var(--dsw-radius-md);padding:12px 14px;margin-bottom:10px}
+.seat-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.seat-head .name{font-weight:600;font-size:12.5px}
+.badge{font-size:11px;padding:1px 7px;border-radius:999px;border:1px solid transparent;line-height:16px}
+.badge.ok{color:#0f7b3f;background:rgba(18,161,80,.1)}
+.badge.miss{color:#a15c00;background:rgba(224,150,0,.12)}
+.think{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--dsw-alias-label-tertiary)}
+.think select{height:24px;width:auto;padding:0 4px;font-size:11.5px;border-radius:6px}
+.seat-grid{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:10px 12px}
+.key-row{display:flex;gap:6px}
+.key-row input{flex:1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.02em}
+
+/* 风格卡片 */
+.styles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.style{border:1px solid var(--dsw-alias-border-l1);border-radius:var(--dsw-radius-md);padding:10px 12px;cursor:pointer;transition:border-color .12s,background .12s;background:var(--dsw-alias-bg-base)}
+.style:hover{border-color:var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2)}
+.style.on{border-color:var(--dsw-alias-state-business-primary);background:#f4f6ff;box-shadow:0 0 0 1px var(--dsw-alias-state-business-primary) inset}
+.style .t{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+.style .d{font-size:11.5px;color:var(--dsw-alias-label-tertiary);margin-top:2px;line-height:1.5}
+.style .temp{font-size:10.5px;color:var(--dsw-alias-label-tertiary);margin-top:6px}
+
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.check{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--dsw-alias-label-primary)}
+.check input{margin:3px 0 0}
+
+.footer{display:flex;gap:8px;justify-content:flex-end;padding:14px 32px;border-top:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-base)}
+
+.toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(20px);background:#1f1f24;color:#fff;font-size:12.5px;padding:9px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="modal">
+    <div class="modal-head">
+      <h1>设置</h1>
+      <div class="spacer"></div>
+      <button class="btn">打开配置文件</button>
+      <button class="icon-btn" title="关闭">✕</button>
+    </div>
+    <div class="modal-body">
+      <nav class="nav">
+        <a><span class="ico">👤</span>账号与余额</a>
+        <a><span class="ico">⚙</span>通用设置</a>
+        <a><span class="ico">◫</span>模型</a>
+        <a><span class="ico">⧉</span>内置插件</a>
+        <a><span class="ico">✦</span>Agent 预设</a>
+        <a class="on"><span class="ico">◈</span>圆桌讨论</a>
+        <a><span class="ico">◆</span>桌宠配置</a>
+        <a><span class="ico">▦</span>插件市场</a>
+      </nav>
+
+      <div class="content">
+        <h2>圆桌配置 <span class="q" title="改动只在点保存后生效">?</span></h2>
+        <div class="banner">
+          <strong>这里没有主持人兜底。</strong><br>
+          AI 们会吵架，会互相拆台，最后谁也不服谁。<br>
+          <strong>那正好。</strong>
+        </div>
+
+        <!-- 席位 -->
+        <div class="card">
+          <div class="card-title">席位 <span class="q" title="至少两个配好 key 的席位才能开场">?</span>
+            <div class="spacer"></div>
+            <button class="btn" onclick="addSeat()">+ 添加席位</button>
+          </div>
+          <div id="seats"></div>
+          <div class="hint">留空 key 的席位会自动跳过。<strong>思考</strong>关闭后这条回复通常快 3–4 倍、省一半 token，代价是推理深度下降 —— 讨论类发言建议关，复杂推理建议开。</div>
+        </div>
+
+        <!-- 我的席位 -->
+        <div class="card">
+          <div class="card-title">我的席位 <span class="q" title="你随时可以插话，下一轮所有模型都会看到">?</span></div>
+          <div class="row two">
+            <div class="field">
+              <label>我在群里的称呼</label>
+              <input type="text" value="我">
+            </div>
+            <div class="field">
+              <label>我的参与方式</label>
+              <select>
+                <option>参与者（随时插话）</option>
+                <option>旁听者（只听不说）</option>
+              </select>
+              <div class="hint">无论哪种，最终判断都由你做</div>
+            </div>
+          </div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" checked>我说话后，优先让能接住的人回应</label>
+            <label class="check"><input type="checkbox" checked>模型不许替我下结论</label>
+          </div>
+        </div>
+
+        <!-- 探讨规则 -->
+        <div class="card">
+          <div class="card-title">探讨规则 <span class="q" title="决定这场讨论怎么推进">?</span></div>
+          <div class="row">
+            <div class="field">
+              <label>调度员</label>
+              <select id="moderator">
+                <option>DeepSeek</option>
+                <option>豆包</option>
+                <option>ChatGPT</option>
+              </select>
+              <div class="hint">只列已配 key 的席位</div>
+            </div>
+            <div class="field">
+              <label>发言方式</label>
+              <select>
+                <option>AI 调度（推荐）</option>
+                <option>轮流</option>
+                <option>随机</option>
+              </select>
+              <div class="hint">首轮固定轮流，之后交给调度员</div>
+            </div>
+            <div class="field">
+              <label>最多几轮</label>
+              <input type="number" id="rounds" value="2" min="1" max="6">
+              <div class="hint">每人最多说几次</div>
+            </div>
+          </div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" checked disabled>首轮互不可见<span class="q" title="先看别人再开口，观点必然趋同；这条不建议关">?</span></label>
+            <label class="check"><input type="checkbox" checked>允许调度员提前收场</label>
+            <label class="check"><input type="checkbox">允许同一人连续发言</label>
+            <label class="check"><input type="checkbox">允许跑题</label>
+          </div>
+        </div>
+
+        <!-- 风格 -->
+        <div class="card">
+          <div class="card-title">讨论风格 <span class="q" title="同时改变调度规则、发言纪律和纪要格式">?</span></div>
+          <div class="styles" id="styles"></div>
+        </div>
+
+        <!-- 预算 -->
+        <div class="card">
+          <div class="card-title">预算与节奏</div>
+          <div class="row">
+            <div class="field">
+              <label>单次字数上限</label>
+              <input type="number" id="words" value="300" min="80" max="1200">
+            </div>
+            <div class="field">
+              <label>温度</label>
+              <input type="number" id="temp" value="0.8" step="0.1" min="0" max="2">
+              <div class="hint" id="tempHint">辩论建议 0.7</div>
+            </div>
+            <div class="field">
+              <label>单次超时（秒）</label>
+              <input type="number" value="120" min="10">
+            </div>
+          </div>
+          <div class="hint" id="cost">预估：2 席位 × 2 轮 + 1 次纪要 ≈ 5 次调用，约 ¥0.02</div>
+        </div>
+
+        <!-- 安全 -->
+        <div class="card sunken">
+          <div class="card-title">安全</div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" checked>密钥默认掩码显示</label>
+            <label class="check"><input type="checkbox" checked>每次保存前校验连通性</label>
+          </div>
+          <div class="hint" style="margin-top:8px">
+            密钥存在 <span class="mono">~/.dsh/profiles/desktop/cordis.patch.yml</span>（权限 600），不写入日志、不经过任何云端。
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn ghost" onclick="toast('已还原（演示）')">还原</button>
+      <button class="btn" onclick="toast('已保存（演示，不会真的写文件）')">保存</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const STYLES = [
+  { id:'debate',     t:'辩论',   d:'两方对垒，逼出最强论证，不许和稀泥', temp:0.7 },
+  { id:'brainstorm', t:'头脑风暴', d:'先求量，禁止否定，最后才排序',        temp:1.0 },
+  { id:'redteam',    t:'红队',   d:'只找失败路径、隐藏假设和滥用场景',      temp:0.8 },
+  { id:'postmortem', t:'复盘',   d:'还原时间线，分清根因和诱因',            temp:0.6 },
+  { id:'socratic',   t:'苏格拉底', d:'只提问和澄清定义，不给结论',          temp:0.7 },
+  { id:'decision',   t:'决策',   d:'收敛到可执行选项，给出取舍判据',        temp:0.7 },
+]
+
+const SEATS = [
+  { name:'ChatGPT',  baseUrl:'https://api.openai.com/v1', model:'gpt-4o', key:'', thinking:'auto', persona:'广度与反例：找被忽略的视角' },
+  { name:'豆包',      baseUrl:'https://ark.cn-beijing.volces.com/api/v3', model:'doubao-seed-2-1-pro-260915', key:'ark-••••••••••••••••••••', thinking:'off', persona:'中文语境与落地细节' },
+  { name:'DeepSeek', baseUrl:'https://api.deepseek.com', model:'deepseek-chat', key:'sk-••••••••••••••••••••', thinking:'auto', persona:'结构化拆解与收敛' },
+]
+
+let activeStyle = 'debate'
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) }
+
+function renderSeats(){
+  const box = document.getElementById('seats')
+  box.innerHTML = SEATS.map((s, i) => `
+    <div class="seat">
+      <div class="seat-head">
+        <span class="name">${esc(s.name || '未命名')}</span>
+        <span class="badge ${s.key ? 'ok' : 'miss'}">${s.key ? '已配置' : '缺 key'}</span>
+        <span class="think">
+          <span>思考</span>
+          <select onchange="SEATS[${i}].thinking=this.value">
+            <option value="auto"${s.thinking === 'auto' ? ' selected' : ''}>自动</option>
+            <option value="on"${s.thinking === 'on' ? ' selected' : ''}>开启</option>
+            <option value="off"${s.thinking === 'off' ? ' selected' : ''}>关闭</option>
+          </select>
+        </span>
+        <div style="flex:1"></div>
+        <button class="btn" onclick="testSeat(${i})">测试连接</button>
+        <button class="btn danger" onclick="removeSeat(${i})">删除</button>
+      </div>
+      <div class="seat-grid">
+        <div class="field">
+          <label>名称</label>
+          <input type="text" value="${esc(s.name)}" oninput="SEATS[${i}].name=this.value">
+        </div>
+        <div class="field">
+          <label>接口地址</label>
+          <input type="text" value="${esc(s.baseUrl)}" oninput="SEATS[${i}].baseUrl=this.value">
+        </div>
+        <div class="field">
+          <label>模型</label>
+          <input type="text" value="${esc(s.model)}" oninput="SEATS[${i}].model=this.value">
+        </div>
+        <div class="field" style="grid-column:1/3">
+          <label>API Key</label>
+          <div class="key-row">
+            <input type="password" value="${esc(s.key)}" oninput="SEATS[${i}].key=this.value" placeholder="sk-... 或 ark-...">
+            <button class="btn" onclick="toggleKey(this)">显示</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>人设（会写进系统提示词）</label>
+          <input type="text" value="${esc(s.persona)}" oninput="SEATS[${i}].persona=this.value">
+        </div>
+      </div>
+    </div>`).join('')
+  renderModerator()
+  updateCost()
+}
+
+function renderModerator(){
+  const sel = document.getElementById('moderator')
+  const ready = SEATS.filter(s => s.key)
+  const cur = sel.value
+  sel.innerHTML = ready.map(s => `<option${s.name === cur ? ' selected' : ''}>${esc(s.name)}</option>`).join('')
+           || '<option>（还没有可用席位）</option>'
+}
+
+function renderStyles(){
+  document.getElementById('styles').innerHTML = STYLES.map(s => `
+    <div class="style ${s.id === activeStyle ? 'on' : ''}" onclick="pickStyle('${s.id}')">
+      <div class="t">${s.t}</div>
+      <div class="d">${s.d}</div>
+      <div class="temp">推荐温度 ${s.temp}</div>
+    </div>`).join('')
+}
+
+function pickStyle(id){
+  activeStyle = id
+  const s = STYLES.find(x => x.id === id)
+  document.getElementById('temp').value = s.temp
+  document.getElementById('tempHint').textContent = `${s.t}建议 ${s.temp}`
+  renderStyles()
+}
+
+function addSeat(){
+  SEATS.push({ name:'新席位', baseUrl:'https://', model:'', key:'', persona:'' })
+  renderSeats()
+}
+function removeSeat(i){
+  SEATS.splice(i,1)
+  renderSeats()
+}
+function toggleKey(btn){
+  const input = btn.previousElementSibling
+  const show = input.type === 'password'
+  input.type = show ? 'text' : 'password'
+  btn.textContent = show ? '隐藏' : '显示'
+}
+function testSeat(i){
+  const s = SEATS[i]
+  if (!s.key) return toast(`${s.name}：还没有 key`)
+  toast(`正在连接 ${s.name}…`)
+  setTimeout(() => toast(`${s.name}：连接正常（演示，未真的发请求）`), 900)
+}
+function updateCost(){
+  const ready = SEATS.filter(s => s.key).length || 0
+  const rounds = Number(document.getElementById('rounds').value) || 2
+  const calls = ready * rounds + 1
+  document.getElementById('cost').textContent =
+    `预估：${ready} 席位 × ${rounds} 轮 + 1 次纪要 ≈ ${calls} 次调用，约 ¥${(calls * 0.004).toFixed(3)}`
+}
+function toast(msg){
+  const el = document.getElementById('toast')
+  el.textContent = msg
+  el.classList.add('show')
+  clearTimeout(el._t)
+  el._t = setTimeout(() => el.classList.remove('show'), 2200)
+}
+
+document.getElementById('rounds').addEventListener('input', updateCost)
+document.getElementById('temp').addEventListener('input', () => {
+  document.getElementById('tempHint').textContent = '手动调整'
+})
+
+renderSeats(); renderStyles()
+</script>
+</body>
+</html>
